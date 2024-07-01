@@ -3,6 +3,7 @@
  * Do not make direct changes to the file.
  */
 
+import { Variant } from "@prisma/client";
 
 export interface paths {
   "/hostels": {
@@ -1039,9 +1040,9 @@ export interface paths {
             /** @enum {string} */
             method?: "manual" | "random";
             allocations?: {
-                studentId?: string;
-                hostelId?: number;
-              }[];
+              studentId?: string;
+              hostelId?: number;
+            }[];
           };
         };
       };
@@ -1156,6 +1157,7 @@ export interface components {
       location?: string;
       year: components["schemas"]["Year"];
       rooms?: components["schemas"]["Room"][];
+      variant: Variant;
     };
     /** @enum {string} */
     GenderType: "MALE" | "FEMALE" | "MIXED";

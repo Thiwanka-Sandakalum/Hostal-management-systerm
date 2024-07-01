@@ -9,26 +9,31 @@ datasource db {
 
 model User {
   id                   Int                   @id @default(autoincrement())
+  clerkId              String                @unique
   username             String
-  password             String
   email                String                @unique
-  phoneNumber          String                @unique
+  phoneNumber          String?
   role                 Role                  @default(STANDARD_USER)
   student              Student?
   privateBoardingOwner PrivateBoardingOwner?
+  Warden               Warden?
 }
 
 enum Role {
   ADMIN
   STANDARD_USER
-  BOARDING_OWNER
+  WARDEN
+}
+enum Variant {
+  INSIDE
+  OUTSIDE
 }
 
 model Student {
-  studentId                String            @id @unique
-  user                     User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  studentId                String            @id @default(uuid())
+  user                     User              @relation(fields: [userId], references: [id] , onDelete: Cascade)
   userId                   Int               @unique
-  room                     Room?             @relation(fields: [roomId], references: [id])
+  room                     Room?             @relation(fields: [roomId], references: [id] , onDelete: Cascade)
   roomId                   Int?
   exchangeRequestsFromUser ExchangeRequest[] @relation("FromUser")
   exchangeRequestsToUser   ExchangeRequest[] @relation("ToUser")
@@ -36,9 +41,15 @@ model Student {
 
 model PrivateBoardingOwner {
   id               Int               @id @default(autoincrement())
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User              @relation(fields: [userId], references: [id] , onDelete: Cascade)
   userId           Int               @unique
   privateBoardings PrivateBoarding[]
+}
+
+model Warden {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id] , onDelete: Cascade)
+  userId Int  @unique
 }
 
 model Hostel {
@@ -49,6 +60,7 @@ model Hostel {
   location   String?    @default("Not specified")
   year       Year
   rooms      Room[]
+  variant    Variant
 }
 
 enum GenderType {
@@ -68,7 +80,7 @@ model Room {
   id       Int       @id @default(autoincrement())
   capacity Int       @default(2)
   beds     Int
-  hostel   Hostel    @relation(fields: [hostelId], references: [id], onDelete: Cascade)
+  hostel   Hostel    @relation(fields: [hostelId], references: [id] , onDelete: Cascade)
   hostelId Int
   students Student[]
 }
@@ -76,9 +88,9 @@ model Room {
 model ExchangeRequest {
   id         Int           @id @default(autoincrement())
   status     RequestStatus @default(PENDING)
-  fromUser   Student       @relation("FromUser", fields: [fromUserId], references: [studentId], onDelete: Cascade)
+  fromUser   Student       @relation("FromUser", fields: [fromUserId], references: [studentId] , onDelete: Cascade)
   fromUserId String
-  toUser     Student?      @relation("ToUser", fields: [toUserId], references: [studentId], onDelete: Cascade)
+  toUser     Student?      @relation("ToUser", fields: [toUserId], references: [studentId] , onDelete: Cascade)
   toUserId   String?
 }
 
@@ -93,7 +105,7 @@ model PrivateBoarding {
   name          String
   location      String               @default("Not specified")
   distance      Float
-  owner         PrivateBoardingOwner @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  owner         PrivateBoardingOwner @relation(fields: [ownerId], references: [id] , onDelete: Cascade)
   ownerId       Int
   description   String
   boardingRooms BoardingRoom[]
@@ -103,7 +115,7 @@ model BoardingRoom {
   id          Int             @id @default(autoincrement())
   capacity    Int
   facilities  String
-  boarding    PrivateBoarding @relation(fields: [boardingId], references: [id], onDelete: Cascade)
+  boarding    PrivateBoarding @relation(fields: [boardingId], references: [id] , onDelete: Cascade)
   boardingId  Int
   rent        Float
   description String
