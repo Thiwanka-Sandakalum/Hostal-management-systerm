@@ -5,56 +5,7 @@ const prisma = new PrismaClient({
 });
 
 export class RoomService {
-
-  async getAllRooms(id: number) {
-    return prisma.room.findMany({
-      where: {
-        hostelId: id,
-      },
-    });
-  }
-
-  async getRoomById(roomId: number, hostelId: number) {
-    const quary: Prisma.RoomFindUniqueArgs = {
-      where: {
-        hostelId: hostelId,
-        id: roomId,
-      },
-    };
-    return prisma.room.findUnique(quary);
-  }
-
-  async createRoom(data: Prisma.RoomCreateManyInput[]) {
-    await prisma.room.createMany({
-      data: data,
-    });
-
-    const rooms = await prisma.hostel.findUnique({
-      where: {
-        id: data[0].hostelId,
-      },
-      include: {
-        rooms: true,
-      },
-    });
-
-    return rooms;
-  }
-
-  async updateRoom(
-    roomId: number,
-    hostelId: number,
-    data: Prisma.RoomUpdateInput
-  ) {
-    return prisma.room.update({
-      where: { id: roomId, hostelId: hostelId },
-      data,
-    });
-  }
-
-  async deleteRoom(roomId: number, hostelId: number) {
-    return prisma.room.delete({ where: { id: roomId, hostelId: hostelId } });
-  }
+  
     async getAllRooms(id: number) {
         return prisma.room.findMany({
             where: {

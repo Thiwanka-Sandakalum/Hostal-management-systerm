@@ -9,7 +9,7 @@ const prisma = new PrismaClient({
 export class HostelController {
   async getAllHostels(
     req: Request<{}, {}, {}, HostelPaths["ListRequest"]>,
-    res: Response<HostelPaths["ListResponse"]>
+    res: Response
   ) {
     try {
       const { location, gender, year, limit, start } = req.query;
@@ -53,7 +53,7 @@ export class HostelController {
 
   async getHostelById(
     req: Request<{ id: string }>,
-    res: Response<HostelPaths["GetByIdResponse"]>
+    res: Response
   ) {
     const id = parseInt(req.params.id);
     console.log(typeof id);
@@ -96,8 +96,8 @@ export class HostelController {
   }
 
   async createHostel(
-    req: Request<{}, {}, HostelPaths["CreateRequest"]>,
-    res: Response<HostelPaths["CreateResponse"]>
+    req: Request,
+    res: Response
   ) {
     let { name, genderType, distance, location, year, rooms, variant } =
       req.body;
@@ -139,7 +139,7 @@ export class HostelController {
 
   async updateHostel(
     req: Request<{ id: string }, {}, HostelPaths["UpdateRequest"]>,
-    res: Response<HostelPaths["UpdateResponse"]>
+    res: Response
   ) {
     let id = parseInt(req.params.id);
     const { name, genderType, distance, location, year } = req.body;
