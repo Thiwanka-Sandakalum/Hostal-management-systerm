@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import router from './router.';
 import { PrismaClient } from '@prisma/client';
+import { prismaDisconnect } from './Middlewares/prismaMiddleware';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -9,6 +10,7 @@ const prisma = new PrismaClient();
 
 // Middleware
 app.use(bodyParser.json());
+app.use(prismaDisconnect);
 
 // Routes
 app.use('', router);
